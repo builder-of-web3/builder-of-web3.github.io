@@ -1,2 +1,79 @@
-# planb-x.github.io
-Free Dev Tools
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Developer Tools</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header>
+  <h1>Dev Utilities</h1>
+</header>
+
+<div class="container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>Tools</h3>
+    <ul>
+      <li onclick="showTool('commaQuote')">Comma Quote</li>
+      <li onclick="showTool('diffTool')">Text Diff (Coming Soon)</li>
+      <li onclick="showTool('jsonTool')">JSON Formatter (Coming Soon)</li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="content">
+
+    <!-- Comma Quote Tool -->
+    <section id="commaQuote" class="tool active">
+      <h2>Comma Quote</h2>
+
+      <div class="panel-row">
+        <div class="panel">
+          <h3>Input</h3>
+          <textarea id="inputText" placeholder="Enter values separated by commas"></textarea>
+        </div>
+
+        <div class="panel options">
+          <h3>Options</h3>
+
+          <label>
+            Separator Character
+            <input type="text" id="separator" value="," maxlength="1">
+          </label>
+
+          <div class="radio-group">
+            <label><input type="radio" name="quote" value="none"> No Quote</label>
+            <label><input type="radio" name="quote" value="single"> Single Quote</label>
+            <label><input type="radio" name="quote" value="double" checked> Double Quote</label>
+          </div>
+
+          <button onclick="convert()">Convert</button>
+        </div>
+      </div>
+
+      <div class="panel full">
+        <h3>Output</h3>
+        <textarea id="outputText" readonly></textarea>
+      </div>
+    </section>
+
+    <!-- Placeholder tools -->
+    <section id="diffTool" class="tool">
+      <h2>Text Diff</h2>
+      <p>Coming soon…</p>
+    </section>
+
+    <section id="jsonTool" class="tool">
+      <h2>JSON Formatter</h2>
+      <p>Coming soon…</p>
+    </section>
+
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
