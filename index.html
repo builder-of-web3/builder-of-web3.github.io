@@ -29,6 +29,9 @@
       <li onclick="showTool('worldclock', this)">
         <span class="icon">🌍</span> World Clock
       </li>
+      <li onclick="showTool('translate', this)">
+        <span class="icon">🌐</span> Translation
+      </li>
     </ul>
   </aside>
 
@@ -606,6 +609,102 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== TRANSLATION TOOL ====== -->
+    <div id="translate" class="tool">
+      <div class="tool-header">
+        <h2>Translation <span class="subtitle">English ↔ Spanish</span></h2>
+        <p class="description">Translate text between English and Spanish with real-time conversion.</p>
+      </div>
+
+      <div class="tool-body">
+        <!-- Language Selector -->
+        <div class="panel translate-controls-panel">
+          <div class="language-selector">
+            <button id="langSourceBtn" class="lang-btn active" onclick="setSourceLanguage('en')">
+              <span class="lang-flag">🇺🇸</span>
+              <span class="lang-name">English</span>
+            </button>
+            <button class="swap-btn" onclick="swapLanguages()" title="Swap languages">
+              ⇄
+            </button>
+            <button id="langTargetBtn" class="lang-btn" onclick="setSourceLanguage('es')">
+              <span class="lang-flag">🇪🇸</span>
+              <span class="lang-name">Spanish</span>
+            </button>
+          </div>
+          <div class="translate-hint">
+            💡 This tool provides basic dictionary-based translation. For production use, integrate with Google Translate API or DeepL.
+          </div>
+        </div>
+
+        <!-- Translation Panels -->
+        <div class="panel-grid two-col-equal">
+          <div class="panel">
+            <div class="panel-header">
+              <h3><span id="sourceLangLabel">English</span> <span class="badge" id="sourceCharCount">0</span></h3>
+              <div class="panel-actions">
+                <button class="btn-small" onclick="clearInput('translateInput')">Clear</button>
+                <button class="btn-small" onclick="pasteClipboard('translateInput'); translateText();">Paste</button>
+              </div>
+            </div>
+            <textarea id="translateInput" class="tall-textarea" placeholder="Enter text to translate..." oninput="translateText()"></textarea>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3><span id="targetLangLabel">Spanish</span> <span class="badge" id="targetCharCount">0</span></h3>
+              <div class="panel-actions">
+                <button class="btn-small" onclick="copyToClipboard('translateOutput')">Copy</button>
+              </div>
+            </div>
+            <pre id="translateOutput" class="output-area tall-output translate-output">Translation will appear here...</pre>
+          </div>
+        </div>
+
+        <!-- Common Phrases Reference -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>📚 Common Phrases Reference</h3>
+            <div class="panel-actions">
+              <button class="btn-small" onclick="togglePhrasesPanel()">Toggle</button>
+            </div>
+          </div>
+          <div id="phrasesPanel" class="phrases-grid">
+            <div class="phrase-category">
+              <h4>Greetings</h4>
+              <div class="phrase-item" onclick="insertPhrase('Hello', 'Hola')">Hello → Hola</div>
+              <div class="phrase-item" onclick="insertPhrase('Good morning', 'Buenos días')">Good morning → Buenos días</div>
+              <div class="phrase-item" onclick="insertPhrase('Good afternoon', 'Buenas tardes')">Good afternoon → Buenas tardes</div>
+              <div class="phrase-item" onclick="insertPhrase('Goodbye', 'Adiós')">Goodbye → Adiós</div>
+              <div class="phrase-item" onclick="insertPhrase('See you later', 'Hasta luego')">See you later → Hasta luego</div>
+            </div>
+            <div class="phrase-category">
+              <h4>Common Words</h4>
+              <div class="phrase-item" onclick="insertPhrase('Yes', 'Sí')">Yes → Sí</div>
+              <div class="phrase-item" onclick="insertPhrase('No', 'No')">No → No</div>
+              <div class="phrase-item" onclick="insertPhrase('Please', 'Por favor')">Please → Por favor</div>
+              <div class="phrase-item" onclick="insertPhrase('Thank you', 'Gracias')">Thank you → Gracias</div>
+              <div class="phrase-item" onclick="insertPhrase('Sorry', 'Lo siento')">Sorry → Lo siento</div>
+            </div>
+            <div class="phrase-category">
+              <h4>Questions</h4>
+              <div class="phrase-item" onclick="insertPhrase('How are you?', '¿Cómo estás?')">How are you? → ¿Cómo estás?</div>
+              <div class="phrase-item" onclick="insertPhrase('What is your name?', '¿Cómo te llamas?')">What is your name? → ¿Cómo te llamas?</div>
+              <div class="phrase-item" onclick="insertPhrase('Where is...?', '¿Dónde está...?')">Where is...? → ¿Dónde está...?</div>
+              <div class="phrase-item" onclick="insertPhrase('How much?', '¿Cuánto cuesta?')">How much? → ¿Cuánto cuesta?</div>
+            </div>
+            <div class="phrase-category">
+              <h4>Useful Phrases</h4>
+              <div class="phrase-item" onclick="insertPhrase('I don\'t understand', 'No entiendo')">I don't understand → No entiendo</div>
+              <div class="phrase-item" onclick="insertPhrase('I need help', 'Necesito ayuda')">I need help → Necesito ayuda</div>
+              <div class="phrase-item" onclick="insertPhrase('I love you', 'Te quiero')">I love you → Te quiero</div>
+              <div class="phrase-item" onclick="insertPhrase('My name is', 'Me llamo')">My name is → Me llamo</div>
+            </div>
           </div>
         </div>
       </div>
