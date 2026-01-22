@@ -761,24 +761,27 @@ let clocksRunning = true;
 const timezones = {
   UTC: { offset: 0, name: 'UTC', iana: 'UTC' },
   IST: { offset: 5.5 * 60, name: 'IST', iana: 'Asia/Kolkata' },
-  CST: { offset: -6 * 60, name: 'CST', iana: 'America/Chicago', hasDST: true },
+  CLT: { offset: -3 * 60, name: 'CLT', iana: 'America/Santiago', hasDST: true },
   Lima: { offset: -5 * 60, name: 'Lima', iana: 'America/Lima' },
   Bogota: { offset: -5 * 60, name: 'Bogota', iana: 'America/Bogota' }
 };
 
-// Check if date is in US DST (second Sunday in March to first Sunday in November)
-function isUSDST(date) {
+// Check if date is in Chile DST (first Sunday in September to first Sunday in April)
+// Chile DST: CLST (UTC-3) in summer, CLT (UTC-4) in winter
+function isChileDST(date) {
   const year = date.getUTCFullYear();
 
-  // Second Sunday in March
-  let marchFirst = new Date(Date.UTC(year, 2, 1));
-  let dstStart = new Date(Date.UTC(year, 2, 8 + (7 - marchFirst.getUTCDay()) % 7, 8)); // 2 AM CST = 8 AM UTC
+  // First Sunday in September (DST starts - clocks go forward)
+  let sepFirst = new Date(Date.UTC(year, 8, 1));
+  let dstStart = new Date(Date.UTC(year, 8, 1 + (7 - sepFirst.getUTCDay()) % 7, 4)); // midnight Chile = 4 AM UTC
 
-  // First Sunday in November
-  let novFirst = new Date(Date.UTC(year, 10, 1));
-  let dstEnd = new Date(Date.UTC(year, 10, 1 + (7 - novFirst.getUTCDay()) % 7, 7)); // 2 AM CDT = 7 AM UTC
+  // First Sunday in April (DST ends - clocks go back)
+  let aprFirst = new Date(Date.UTC(year, 3, 1));
+  let dstEnd = new Date(Date.UTC(year, 3, 1 + (7 - aprFirst.getUTCDay()) % 7, 3)); // midnight Chile = 3 AM UTC
 
-  return date >= dstStart && date < dstEnd;
+  // Chile DST is from September to April (Southern Hemisphere)
+  // So DST is active from September to December, and January to April
+  return date >= dstStart || date < dstEnd;
 }
 
 // Get offset for a timezone considering DST
@@ -788,30 +791,48 @@ function getTimezoneOffset(tzName, date = new Date()) {
 
   let offset = tz.offset;
 
-  // Adjust for US DST (CST becomes CDT)
-  if (tz.hasDST && isUSDST(date)) {
-    offset += 60; // Add 1 hour during DST
+  // Adjust for Chile DST (CLT becomes CLST)
+  // In DST (summer): UTC-3, In standard (winter): UTC-4
+  if (tz.hasDST && tzName === 'CLT') {
+    if (!isChileDST(date)) {
+      offset = -4 * 60; // Winter time (CLT)
+    }
+    // else offset stays at -3 (CLST - summer time)
   }
 
   return offset;
 }
 
-// Format time as HH:MM:SS
+// Format time as HH:MM:SS with AM/PM indicator (using UTC methods to avoid local timezone conversion)
 function formatTime(date) {
-  return date.toTimeString().slice(0, 8);
+  const hours24 = date.getUTCHours();
+  const m = String(date.getUTCMinutes()).padStart(2, '0');
+  const s = String(date.getUTCSeconds()).padStart(2, '0');
+
+  // 24-hour format
+  const h24 = String(hours24).padStart(2, '0');
+
+  // 12-hour format with AM/PM
+  const hours12 = hours24 % 12 || 12;
+  const ampm = hours24 < 12 ? 'AM' : 'PM';
+
+  // Return both formats: "17:09:50 (5:09 PM)"
+  return `${h24}:${m}:${s} (${hours12}:${m} ${ampm})`;
 }
 
-// Format date as Mon, Jan 22
+// Format date as Mon, Jan 22 (using UTC methods to avoid local timezone conversion)
 function formatDate(date) {
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+  return `${days[date.getUTCDay()]}, ${months[date.getUTCMonth()]} ${date.getUTCDate()}`;
 }
 
-// Get time in a specific timezone
+// Get time in a specific timezone (returns a Date where UTC methods show the target timezone time)
 function getTimeInTimezone(tzName, sourceDate = new Date()) {
   const offset = getTimezoneOffset(tzName, sourceDate);
-  const utcTime = sourceDate.getTime() + sourceDate.getTimezoneOffset() * 60000;
+  // Get UTC timestamp from source date
+  const utcTime = sourceDate.getTime();
+  // Add offset to get the target timezone time, stored in UTC position
   return new Date(utcTime + offset * 60000);
 }
 
@@ -829,15 +850,15 @@ function updateLiveClocks() {
   document.getElementById('liveIST').textContent = formatTime(istTime);
   document.getElementById('liveDateIST').textContent = formatDate(istTime);
 
-  // CST
-  const cstTime = getTimeInTimezone('CST', now);
-  document.getElementById('liveCST').textContent = formatTime(cstTime);
-  document.getElementById('liveDateCST').textContent = formatDate(cstTime);
+  // CLT (Chile)
+  const cltTime = getTimeInTimezone('CLT', now);
+  document.getElementById('liveCLT').textContent = formatTime(cltTime);
+  document.getElementById('liveDateCLT').textContent = formatDate(cltTime);
 
-  // Update CST offset display based on DST
-  const cstOffsetEl = document.getElementById('cstOffset');
-  if (cstOffsetEl) {
-    cstOffsetEl.textContent = isUSDST(now) ? 'UTC -5:00 (CDT)' : 'UTC -6:00 (CST)';
+  // Update CLT offset display based on DST
+  const cltOffsetEl = document.getElementById('cltOffset');
+  if (cltOffsetEl) {
+    cltOffsetEl.textContent = isChileDST(now) ? 'UTC -3:00 (CLST)' : 'UTC -4:00 (CLT)';
   }
 
   // Lima
@@ -890,10 +911,77 @@ function setCurrentTime() {
 function clearConverter() {
   document.getElementById('inputDate').value = '';
   document.getElementById('inputTime').value = '';
+  document.getElementById('utcQuickInput').value = '';
 
-  ['UTC', 'IST', 'CST', 'Lima', 'Bogota'].forEach(tz => {
+  ['UTC', 'IST', 'CLT', 'Lima', 'Bogota'].forEach(tz => {
     document.getElementById('converted' + tz).textContent = '--:--:--';
     document.getElementById('convertedDate' + tz).textContent = '---';
+  });
+}
+
+// Parse UTC datetime input (format: 2026-01-22 11:23:44.073)
+function parseUTCInput() {
+  const input = document.getElementById('utcQuickInput').value.trim();
+
+  if (!input) {
+    return;
+  }
+
+  // Parse format: YYYY-MM-DD HH:MM:SS.mmm or YYYY-MM-DD HH:MM:SS
+  const regex = /^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,3}))?$/;
+  const match = input.match(regex);
+
+  if (!match) {
+    return; // Invalid format, just don't convert
+  }
+
+  const [, year, month, day, hours, minutes, seconds, ms = '0'] = match;
+
+  // Create UTC date
+  const utcDate = new Date(Date.UTC(
+    parseInt(year),
+    parseInt(month) - 1,
+    parseInt(day),
+    parseInt(hours),
+    parseInt(minutes),
+    parseInt(seconds),
+    parseInt(ms.padEnd(3, '0'))
+  ));
+
+  if (isNaN(utcDate.getTime())) {
+    return; // Invalid date
+  }
+
+  // Convert to all timezones
+  convertFromUTCDate(utcDate);
+}
+
+// Paste from clipboard and convert UTC
+async function pasteAndConvertUTC() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('utcQuickInput').value = text.trim();
+    parseUTCInput();
+  } catch (err) {
+    alert('Unable to access clipboard. Please paste manually.');
+  }
+}
+
+// Convert from a UTC Date object to all timezones
+function convertFromUTCDate(utcDate) {
+  const utcTime = utcDate.getTime();
+
+  ['UTC', 'IST', 'CLT', 'Lima', 'Bogota'].forEach(tz => {
+    const offset = getTimezoneOffset(tz, utcDate);
+    const convertedTime = new Date(utcTime + offset * 60000);
+
+    // Format with milliseconds for more precision
+    const timeStr = formatTime(convertedTime);
+    const ms = utcDate.getUTCMilliseconds();
+    const timeWithMs = ms > 0 ? `${timeStr}.${ms.toString().padStart(3, '0')}` : timeStr;
+
+    document.getElementById('converted' + tz).textContent = timeWithMs;
+    document.getElementById('convertedDate' + tz).textContent = formatDate(convertedTime);
   });
 }
 
@@ -920,7 +1008,7 @@ function convertTime() {
   const utcDateObj = new Date(utcTime);
 
   // Convert to all timezones
-  ['UTC', 'IST', 'CST', 'Lima', 'Bogota'].forEach(tz => {
+  ['UTC', 'IST', 'CLT', 'Lima', 'Bogota'].forEach(tz => {
     const offset = getTimezoneOffset(tz, utcDateObj);
     const convertedTime = new Date(utcTime + offset * 60000);
 
@@ -941,7 +1029,7 @@ function copyConvertedTimes() {
     lines.push('');
   }
 
-  ['UTC', 'IST', 'CST', 'Lima', 'Bogota'].forEach(tz => {
+  ['UTC', 'IST', 'CLT', 'Lima', 'Bogota'].forEach(tz => {
     const time = document.getElementById('converted' + tz).textContent;
     const date = document.getElementById('convertedDate' + tz).textContent;
     if (time !== '--:--:--') {
@@ -975,6 +1063,8 @@ window.setCurrentTime = setCurrentTime;
 window.clearConverter = clearConverter;
 window.convertTime = convertTime;
 window.copyConvertedTimes = copyConvertedTimes;
+window.parseUTCInput = parseUTCInput;
+window.pasteAndConvertUTC = pasteAndConvertUTC;
 window.clearInput = clearInput;
 window.pasteClipboard = pasteClipboard;
 window.copyToClipboard = copyToClipboard;
