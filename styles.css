@@ -963,7 +963,7 @@ select:focus, input[type="text"]:focus {
 
 .clock-card.utc::before { background: #6366f1; }
 .clock-card.ist::before { background: #f59e0b; }
-.clock-card.cst::before { background: #ef4444; }
+.clock-card.clt::before { background: #ef4444; }
 .clock-card.lima::before { background: #10b981; }
 .clock-card.bogota::before { background: #8b5cf6; }
 
@@ -1017,6 +1017,57 @@ select:focus, input[type="text"]:focus {
 /* Converter Panel */
 .converter-panel {
   margin-bottom: 20px;
+}
+
+/* UTC Quick Input */
+.utc-quick-input {
+  margin-bottom: 16px;
+}
+
+.utc-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.utc-input-row input {
+  flex: 1;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: 'Menlo', 'Monaco', monospace;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.utc-input-row input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.converter-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.converter-divider::before,
+.converter-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.converter-divider span {
+  padding: 0 16px;
 }
 
 .converter-grid {
@@ -1080,7 +1131,7 @@ select:focus, input[type="text"]:focus {
 
 .tz-label.utc-label { background: #e0e7ff; color: #4f46e5; }
 .tz-label.ist-label { background: #fef3c7; color: #d97706; }
-.tz-label.cst-label { background: #fee2e2; color: #dc2626; }
+.tz-label.clt-label { background: #fee2e2; color: #dc2626; }
 .tz-label.lima-label { background: #d1fae5; color: #059669; }
 .tz-label.bogota-label { background: #ede9fe; color: #7c3aed; }
 
