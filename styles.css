@@ -928,3 +928,212 @@ select:focus, input[type="text"]:focus {
   }
 }
 
+/* ============================================
+   World Clock Tool
+   ============================================ */
+
+.live-clocks-panel {
+  margin-bottom: 20px;
+}
+
+.clocks-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.clock-card {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.clock-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.clock-card.utc::before { background: #6366f1; }
+.clock-card.ist::before { background: #f59e0b; }
+.clock-card.cst::before { background: #ef4444; }
+.clock-card.lima::before { background: #10b981; }
+.clock-card.bogota::before { background: #8b5cf6; }
+
+.clock-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.clock-time {
+  font-size: 28px;
+  font-weight: 700;
+  font-family: 'Menlo', 'Monaco', monospace;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.clock-date {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.clock-offset {
+  font-size: 10px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+@media (max-width: 1200px) {
+  .clocks-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .clocks-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .clocks-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Converter Panel */
+.converter-panel {
+  margin-bottom: 20px;
+}
+
+.converter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.converter-input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.time-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.time-input-row input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.converted-times-section h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.converted-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.converted-row {
+  display: grid;
+  grid-template-columns: 80px 100px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--bg-main);
+  border-radius: var(--radius);
+}
+
+.tz-label {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.tz-label.utc-label { background: #e0e7ff; color: #4f46e5; }
+.tz-label.ist-label { background: #fef3c7; color: #d97706; }
+.tz-label.cst-label { background: #fee2e2; color: #dc2626; }
+.tz-label.lima-label { background: #d1fae5; color: #059669; }
+.tz-label.bogota-label { background: #ede9fe; color: #7c3aed; }
+
+.tz-time {
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Menlo', 'Monaco', monospace;
+  color: var(--text-primary);
+}
+
+.tz-date {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+  .converter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Quick Reference Table */
+.quick-ref-table {
+  overflow-x: auto;
+}
+
+.quick-ref-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.quick-ref-table th,
+.quick-ref-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.quick-ref-table th {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  background: var(--bg-main);
+}
+
+.quick-ref-table td {
+  color: var(--text-primary);
+}
+
+.quick-ref-table tr:last-child td {
+  border-bottom: none;
+}
+
