@@ -2,277 +2,430 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dev Utilities</title>
-  < style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f5f7fa;
-    }
-    header {
-      background: #1f2937;
-      color: #fff;
-      padding: 12px 20px;
-      font-size: 20px;
-    }
-    .container {
-      display: flex;
-      height: calc(100vh - 50px);
-    }
-    aside {
-      width: 220px;
-      background: #2c3e50;
-      color: white;
-      padding: 10px;
-    }
-    aside button {
-      width: 100%;
-      margin-bottom: 8px;
-      padding: 10px;
-      background: #34495e;
-      color: white;
-      border: none;
-      cursor: pointer;
-      text-align: left;
-    }
-    aside button:hover {
-      background: #3d566e;
-    }
-    main {
-      flex: 1;
-      padding: 20px;
-      overflow: auto;
-    }
-    .tool {
-      display: none;
-    }
-    .tool.active {
-      display: block;
-    }
-    textarea {
-      width: 100%;
-      min-height: 140px;
-      padding: 10px;
-      margin-bottom: 10px;
-      font-family: monospace;
-    }
-    .row {
-      display: flex;
-      gap: 20px;
-    }
-    .col {
-      flex: 1;
-    }
-    button.primary {
-      background: #27ae60;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      cursor: pointer;
-    }
-    button.primary:hover {
-      background: #219150;
-    }
-    pre {
-      background: #1e1e1e;
-      color: #dcdcdc;
-      padding: 10px;
-      white-space: pre-wrap;
-      min-height: 120px;
-    }
-    label {
-      display: block;
-      margin-bottom: 6px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dev Utilities - Professional Tools</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<header>Dev Utilities</header>
+<header>
+  <span class="logo">⚙️ Dev Utilities</span>
+  <span class="tagline">Professional Developer Tools</span>
+</header>
 
 <div class="container">
-  <aside>
-    <button onclick="showTool('comma')">Comma Quote</button>
-    <button onclick="showTool('listdiff')">List Diff</button>
-    <button onclick="showTool('json')">JSON Parser / Diff</button>
+  <aside class="sidebar">
+    <h3>Tools</h3>
+    <ul>
+      <li class="active" onclick="showTool('comma', this)">
+        <span class="icon">📝</span> Comma Quote
+      </li>
+      <li onclick="showTool('listdiff', this)">
+        <span class="icon">🔀</span> List Diff
+      </li>
+      <li onclick="showTool('json', this)">
+        <span class="icon">{ }</span> JSON Tools
+      </li>
+    </ul>
   </aside>
 
-  <main>
+  <main class="content">
 
-    <!-- COMMA QUOTE -->
+    <!-- ====== COMMA QUOTE TOOL ====== -->
     <div id="comma" class="tool active">
-      <h2>Comma Quote – Online Separator</h2>
+      <div class="tool-header">
+        <h2>Comma Quote <span class="subtitle">Online Comma Separator</span></h2>
+        <p class="description">Convert lists to comma-separated values with optional quoting. Supports multiple input formats.</p>
+      </div>
 
-      <textarea id="commaInput" placeholder="Enter values (one per line)"></textarea>
+      <div class="tool-body">
+        <div class="panel-grid two-col">
+          <!-- Input Panel -->
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Input</h3>
+              <div class="panel-actions">
+                <button class="btn-small" onclick="clearInput('commaInput')">Clear</button>
+                <button class="btn-small" onclick="pasteClipboard('commaInput')">Paste</button>
+              </div>
+            </div>
+            <textarea id="commaInput" placeholder="Enter values (one per line or separated by your chosen delimiter)&#10;&#10;Example:&#10;apple&#10;banana&#10;cherry"></textarea>
+            <div class="char-count">
+              <span id="commaInputCount">0</span> characters | <span id="commaLineCount">0</span> lines
+            </div>
+          </div>
 
-      <label>Separator Character
-        <input id="separator" value="," />
-      </label>
+          <!-- Options Panel -->
+          <div class="panel options-panel">
+            <h3>Options</h3>
 
-      <label><input type="radio" name="quote" value="" checked /> No Quote</label>
-      <label><input type="radio" name="quote" value="'" /> Single Quote</label>
-      <label><input type="radio" name="quote" value='"' /> Double Quote</label>
+            <div class="option-group">
+              <label class="option-label">Input Separator</label>
+              <div class="input-row">
+                <select id="inputSepType" onchange="toggleCustomInput('inputSep')">
+                  <option value="newline">Newline</option>
+                  <option value="comma">Comma (,)</option>
+                  <option value="tab">Tab</option>
+                  <option value="space">Space</option>
+                  <option value="custom">Custom</option>
+                </select>
+                <input type="text" id="inputSepCustom" class="hidden" placeholder="Custom" maxlength="10" />
+              </div>
+            </div>
 
-      <label><input type="checkbox" id="removeDup" checked /> Remove duplicates</label>
-      <label><input type="checkbox" id="wrapArray" /> Wrap with [ ]</label>
+            <div class="option-group">
+              <label class="option-label">Output Separator</label>
+              <div class="input-row">
+                <select id="outputSepType" onchange="toggleCustomOutput('outputSep')">
+                  <option value=",">Comma (,)</option>
+                  <option value=", ">Comma + Space (, )</option>
+                  <option value=",\n">Comma + Newline</option>
+                  <option value="\n">Newline</option>
+                  <option value="\t">Tab</option>
+                  <option value="custom">Custom</option>
+                </select>
+                <input type="text" id="outputSepCustom" class="hidden" placeholder="Custom" maxlength="10" />
+              </div>
+            </div>
 
-      <button class="primary" onclick="convertComma()">Convert</button>
+            <div class="option-group">
+              <label class="option-label">Quote Style</label>
+              <div class="radio-group">
+                <label class="radio-item">
+                  <input type="radio" name="quoteType" value="" checked />
+                  <span>None</span>
+                </label>
+                <label class="radio-item">
+                  <input type="radio" name="quoteType" value="'" />
+                  <span>Single ('value')</span>
+                </label>
+                <label class="radio-item">
+                  <input type="radio" name="quoteType" value='"' />
+                  <span>Double ("value")</span>
+                </label>
+                <label class="radio-item">
+                  <input type="radio" name="quoteType" value="`" />
+                  <span>Backtick (`value`)</span>
+                </label>
+              </div>
+            </div>
 
-      <h3>Output</h3>
-      <pre id="commaOutput"></pre>
+            <div class="option-group">
+              <label class="option-label">Additional Options</label>
+              <div class="checkbox-group">
+                <label class="checkbox-item">
+                  <input type="checkbox" id="removeDuplicates" checked />
+                  <span>Remove duplicates</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" id="trimWhitespace" checked />
+                  <span>Trim whitespace</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" id="removeEmpty" checked />
+                  <span>Remove empty lines</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" id="sortOutput" />
+                  <span>Sort alphabetically</span>
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" id="wrapBrackets" />
+                  <span>Wrap with [ ]</span>
+                </label>
+              </div>
+            </div>
+
+            <button class="btn-primary btn-full" onclick="convertCommaQuote()">
+              Convert →
+            </button>
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="panel output-panel">
+          <div class="panel-header">
+            <h3>Output</h3>
+            <div class="panel-actions">
+              <button class="btn-small" onclick="copyToClipboard('commaOutput')">Copy</button>
+              <button class="btn-small" onclick="downloadOutput('commaOutput', 'output.txt')">Download</button>
+            </div>
+          </div>
+          <pre id="commaOutput" class="output-area"></pre>
+          <div class="output-stats">
+            <span id="commaOutputCount">0</span> items
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- LIST DIFF -->
+    <!-- ====== LIST DIFF TOOL ====== -->
     <div id="listdiff" class="tool">
-      <h2>List Diff</h2>
-
-      <div class="row">
-        <div class="col">
-          <h3>List A</h3>
-          <textarea id="listA"></textarea>
-        </div>
-        <div class="col">
-          <h3>List B</h3>
-          <textarea id="listB"></textarea>
-        </div>
+      <div class="tool-header">
+        <h2>List Diff <span class="subtitle">Compare Two Lists</span></h2>
+        <p class="description">Find differences between two lists: items only in A, only in B, or common to both (A ∩ B).</p>
       </div>
 
-      <label><input type="checkbox" id="caseSensitive" /> Case Sensitive</label>
-      <label><input type="checkbox" id="trimSpaces" checked /> Trim Spaces</label>
+      <div class="tool-body">
+        <!-- Input Lists -->
+        <div class="panel-grid two-col-equal">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>List A</h3>
+              <div class="panel-actions">
+                <button class="btn-small" onclick="clearInput('listA')">Clear</button>
+                <button class="btn-small" onclick="pasteClipboard('listA')">Paste</button>
+              </div>
+            </div>
+            <textarea id="listA" placeholder="Enter items for List A (one per line)&#10;&#10;Example:&#10;apple&#10;banana&#10;cherry&#10;date"></textarea>
+            <div class="char-count">
+              <span id="listACount">0</span> items
+            </div>
+          </div>
 
-      <button class="primary" onclick="compareLists()">Compare Lists</button>
+          <div class="panel">
+            <div class="panel-header">
+              <h3>List B</h3>
+              <div class="panel-actions">
+                <button class="btn-small" onclick="clearInput('listB')">Clear</button>
+                <button class="btn-small" onclick="pasteClipboard('listB')">Paste</button>
+              </div>
+            </div>
+            <textarea id="listB" placeholder="Enter items for List B (one per line)&#10;&#10;Example:&#10;banana&#10;cherry&#10;elderberry&#10;fig"></textarea>
+            <div class="char-count">
+              <span id="listBCount">0</span> items
+            </div>
+          </div>
+        </div>
 
-      <div class="row">
-        <div class="col">
-          <h3>A Only</h3>
-          <pre id="aOnly"></pre>
+        <!-- Options -->
+        <div class="options-row">
+          <div class="checkbox-group horizontal">
+            <label class="checkbox-item">
+              <input type="checkbox" id="listCaseSensitive" />
+              <span>Case sensitive</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="listTrimSpaces" checked />
+              <span>Trim spaces</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="listIgnoreEmpty" checked />
+              <span>Ignore empty lines</span>
+            </label>
+          </div>
+          <button class="btn-primary" onclick="compareListDiff()">
+            Compare Lists →
+          </button>
         </div>
-        <div class="col">
-          <h3>A ∩ B</h3>
-          <pre id="common"></pre>
+
+        <!-- Results -->
+        <div class="panel-grid three-col">
+          <div class="panel result-panel aonly">
+            <div class="panel-header">
+              <h3>A Only <span class="badge red" id="aOnlyBadge">0</span></h3>
+              <button class="btn-small" onclick="copyToClipboard('aOnlyResult')">Copy</button>
+            </div>
+            <pre id="aOnlyResult" class="result-area"></pre>
+          </div>
+
+          <div class="panel result-panel common">
+            <div class="panel-header">
+              <h3>A ∩ B <span class="badge green" id="commonBadge">0</span></h3>
+              <button class="btn-small" onclick="copyToClipboard('commonResult')">Copy</button>
+            </div>
+            <pre id="commonResult" class="result-area"></pre>
+          </div>
+
+          <div class="panel result-panel bonly">
+            <div class="panel-header">
+              <h3>B Only <span class="badge blue" id="bOnlyBadge">0</span></h3>
+              <button class="btn-small" onclick="copyToClipboard('bOnlyResult')">Copy</button>
+            </div>
+            <pre id="bOnlyResult" class="result-area"></pre>
+          </div>
         </div>
-        <div class="col">
-          <h3>B Only</h3>
-          <pre id="bOnly"></pre>
+
+        <!-- Summary -->
+        <div class="summary-panel" id="listDiffSummary" style="display: none;">
+          <div class="summary-item">
+            <span class="summary-label">List A Total:</span>
+            <span class="summary-value" id="summaryATotal">0</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">List B Total:</span>
+            <span class="summary-value" id="summaryBTotal">0</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Similarity:</span>
+            <span class="summary-value" id="summarySimilarity">0%</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- JSON -->
+    <!-- ====== JSON TOOLS ====== -->
     <div id="json" class="tool">
-      <h2>JSON Parser / Diff</h2>
-
-      <div class="row">
-        <div class="col">
-          <h3>JSON A</h3>
-          <textarea id="jsonA"></textarea>
-        </div>
-        <div class="col">
-          <h3>JSON B</h3>
-          <textarea id="jsonB"></textarea>
-        </div>
+      <div class="tool-header">
+        <h2>JSON Tools <span class="subtitle">Parser & Diff</span></h2>
+        <p class="description">Parse, format, validate, and compare JSON objects with detailed diff output.</p>
       </div>
 
-      <button class="primary" onclick="compareJSON()">Compare JSON</button>
+      <div class="tool-body">
+        <!-- Mode Tabs -->
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchJsonMode('parse', this)">Parse / Format</button>
+          <button class="tab-btn" onclick="switchJsonMode('diff', this)">JSON Diff</button>
+        </div>
 
-      <h3>Result</h3>
-      <pre id="jsonResult"></pre>
+        <!-- Parse Mode -->
+        <div id="jsonParseMode" class="json-mode active">
+          <div class="panel-grid two-col">
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Input JSON</h3>
+                <div class="panel-actions">
+                  <button class="btn-small" onclick="clearInput('jsonParseInput')">Clear</button>
+                  <button class="btn-small" onclick="pasteClipboard('jsonParseInput')">Paste</button>
+                </div>
+              </div>
+              <textarea id="jsonParseInput" placeholder='Enter JSON to parse/format&#10;&#10;Example:&#10;{"name":"John","age":30,"city":"New York"}'></textarea>
+              <div class="status-bar" id="jsonParseStatus">
+                <span class="status-icon">⬤</span> Ready
+              </div>
+            </div>
+
+            <div class="panel options-panel">
+              <h3>Format Options</h3>
+
+              <div class="option-group">
+                <label class="option-label">Indentation</label>
+                <select id="jsonIndent">
+                  <option value="2">2 spaces</option>
+                  <option value="4">4 spaces</option>
+                  <option value="tab">Tab</option>
+                  <option value="0">Minified</option>
+                </select>
+              </div>
+
+              <div class="checkbox-group">
+                <label class="checkbox-item">
+                  <input type="checkbox" id="jsonSortKeys" />
+                  <span>Sort keys alphabetically</span>
+                </label>
+              </div>
+
+              <div class="button-group">
+                <button class="btn-primary" onclick="formatJSON()">Format / Beautify</button>
+                <button class="btn-secondary" onclick="minifyJSON()">Minify</button>
+                <button class="btn-secondary" onclick="validateJSON()">Validate</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel output-panel">
+            <div class="panel-header">
+              <h3>Formatted Output</h3>
+              <div class="panel-actions">
+                <button class="btn-small" onclick="copyToClipboard('jsonParseOutput')">Copy</button>
+                <button class="btn-small" onclick="downloadOutput('jsonParseOutput', 'formatted.json')">Download</button>
+              </div>
+            </div>
+            <pre id="jsonParseOutput" class="output-area json-output"></pre>
+          </div>
+        </div>
+
+        <!-- Diff Mode -->
+        <div id="jsonDiffMode" class="json-mode">
+          <div class="panel-grid two-col-equal">
+            <div class="panel">
+              <div class="panel-header">
+                <h3>JSON A (Original)</h3>
+                <div class="panel-actions">
+                  <button class="btn-small" onclick="clearInput('jsonDiffA')">Clear</button>
+                  <button class="btn-small" onclick="pasteClipboard('jsonDiffA')">Paste</button>
+                </div>
+              </div>
+              <textarea id="jsonDiffA" placeholder='Enter original JSON&#10;&#10;Example:&#10;{"name":"John","age":30}'></textarea>
+              <div class="status-bar" id="jsonAStatus">
+                <span class="status-icon">⬤</span> Ready
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h3>JSON B (Modified)</h3>
+                <div class="panel-actions">
+                  <button class="btn-small" onclick="clearInput('jsonDiffB')">Clear</button>
+                  <button class="btn-small" onclick="pasteClipboard('jsonDiffB')">Paste</button>
+                </div>
+              </div>
+              <textarea id="jsonDiffB" placeholder='Enter modified JSON&#10;&#10;Example:&#10;{"name":"Jane","age":31,"city":"NYC"}'></textarea>
+              <div class="status-bar" id="jsonBStatus">
+                <span class="status-icon">⬤</span> Ready
+              </div>
+            </div>
+          </div>
+
+          <div class="options-row">
+            <div class="checkbox-group horizontal">
+              <label class="checkbox-item">
+                <input type="checkbox" id="jsonIgnoreOrder" />
+                <span>Ignore array order</span>
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" id="jsonShowUnchanged" />
+                <span>Show unchanged values</span>
+              </label>
+            </div>
+            <button class="btn-primary" onclick="compareJSONDiff()">
+              Compare JSON →
+            </button>
+          </div>
+
+          <div class="panel output-panel">
+            <div class="panel-header">
+              <h3>Diff Result</h3>
+              <div class="diff-legend">
+                <span class="legend-item added">+ Added</span>
+                <span class="legend-item removed">- Removed</span>
+                <span class="legend-item changed">~ Changed</span>
+              </div>
+              <div class="panel-actions">
+                <button class="btn-small" onclick="copyToClipboard('jsonDiffOutput')">Copy</button>
+              </div>
+            </div>
+            <div id="jsonDiffOutput" class="diff-output"></div>
+          </div>
+
+          <!-- Diff Summary -->
+          <div class="summary-panel" id="jsonDiffSummary" style="display: none;">
+            <div class="summary-item">
+              <span class="summary-label added">Added:</span>
+              <span class="summary-value" id="diffAdded">0</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label removed">Removed:</span>
+              <span class="summary-value" id="diffRemoved">0</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label changed">Changed:</span>
+              <span class="summary-value" id="diffChanged">0</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-label">Unchanged:</span>
+              <span class="summary-value" id="diffUnchanged">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </main>
 </div>
 
-<script>
-  function showTool(id) {
-    document.querySelectorAll('.tool').forEach(t => t.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-  }
-
-  // COMMA QUOTE
-  function convertComma() {
-    let values = document.getElementById('commaInput').value
-      .split(/\r?\n/)
-      .map(v => v.trim())
-      .filter(Boolean);
-
-    if (document.getElementById('removeDup').checked) {
-      values = [...new Set(values)];
-    }
-
-    const quote = document.querySelector('input[name="quote"]:checked').value;
-    const sep = document.getElementById('separator').value;
-
-    let result = values.map(v => quote + v + quote).join(sep);
-
-    if (document.getElementById('wrapArray').checked) {
-      result = `[${result}]`;
-    }
-
-    document.getElementById('commaOutput').textContent = result;
-  }
-
-  // LIST DIFF
-  function compareLists() {
-    let a = document.getElementById('listA').value.split(/\r?\n/);
-    let b = document.getElementById('listB').value.split(/\r?\n/);
-
-    const trim = document.getElementById('trimSpaces').checked;
-    const cs = document.getElementById('caseSensitive').checked;
-
-    const normalize = v => {
-      if (trim) v = v.trim();
-      return cs ? v : v.toLowerCase();
-    };
-
-    const mapA = a.map(normalize).filter(Boolean);
-    const mapB = b.map(normalize).filter(Boolean);
-
-    const setA = new Set(mapA);
-    const setB = new Set(mapB);
-
-    const aOnly = [...setA].filter(x => !setB.has(x));
-    const bOnly = [...setB].filter(x => !setA.has(x));
-    const common = [...setA].filter(x => setB.has(x));
-
-    document.getElementById('aOnly').textContent = aOnly.join('\n');
-    document.getElementById('bOnly').textContent = bOnly.join('\n');
-    document.getElementById('common').textContent = common.join('\n');
-  }
-
-  // JSON DIFF
-  function compareJSON() {
-    try {
-      const a = JSON.parse(document.getElementById('jsonA').value);
-      const b = JSON.parse(document.getElementById('jsonB').value);
-      const diff = diffJSON(a, b);
-      document.getElementById('jsonResult').textContent =
-        JSON.stringify(diff, null, 2);
-    } catch (e) {
-      document.getElementById('jsonResult').textContent =
-        'Invalid JSON: ' + e.message;
-    }
-  }
-
-  function diffJSON(a, b) {
-    if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) {
-      return a === b ? undefined : { from: a, to: b };
-    }
-
-    const result = {};
-    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
-
-    keys.forEach(k => {
-      if (!(k in a)) result[k] = { added: b[k] };
-      else if (!(k in b)) result[k] = { removed: a[k] };
-      else {
-        const d = diffJSON(a[k], b[k]);
-        if (d !== undefined) result[k] = d;
-      }
-    });
-
-    return Object.keys(result).length ? result : undefined;
-  }
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
+
