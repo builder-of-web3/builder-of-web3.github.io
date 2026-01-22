@@ -246,6 +246,21 @@ header {
   grid-template-columns: 1fr 1fr 1fr;
 }
 
+.panel-grid.three-col-comma {
+  grid-template-columns: 1fr 1fr 280px;
+  align-items: stretch;
+  margin-bottom: 0;
+}
+
+@media (max-width: 1400px) {
+  .panel-grid.three-col-comma {
+    grid-template-columns: 1fr 1fr;
+  }
+  .panel-grid.three-col-comma .options-panel {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 1200px) {
   .panel-grid.three-col {
     grid-template-columns: 1fr;
@@ -254,9 +269,65 @@ header {
 
 @media (max-width: 900px) {
   .panel-grid.two-col,
-  .panel-grid.two-col-equal {
+  .panel-grid.two-col-equal,
+  .panel-grid.three-col-comma {
     grid-template-columns: 1fr;
   }
+  .panel-grid.three-col-comma .options-panel {
+    grid-column: auto;
+  }
+}
+
+/* Tall textareas and outputs for side-by-side layout */
+.tall-textarea {
+  min-height: 350px;
+}
+
+.tall-output {
+  min-height: 350px;
+  max-height: 350px;
+}
+
+/* Compact options panel */
+.options-panel.compact {
+  padding: 16px;
+}
+
+.options-panel.compact h3 {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+.options-panel.compact .option-group {
+  margin-bottom: 14px;
+}
+
+.options-panel.compact .option-label {
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.options-panel.compact select {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.radio-group.compact,
+.checkbox-group.compact {
+  gap: 4px;
+}
+
+.radio-group.compact .radio-item,
+.checkbox-group.compact .checkbox-item {
+  font-size: 13px;
+  gap: 6px;
+}
+
+.radio-group.compact .radio-item input,
+.checkbox-group.compact .checkbox-item input {
+  width: 14px;
+  height: 14px;
 }
 
 /* ============================================
