@@ -276,25 +276,10 @@
 
         <!-- Parse Mode -->
         <div id="jsonParseMode" class="json-mode active">
-          <div class="panel-grid two-col">
-            <div class="panel">
-              <div class="panel-header">
-                <h3>Input JSON</h3>
-                <div class="panel-actions">
-                  <button class="btn-small" onclick="clearInput('jsonParseInput')">Clear</button>
-                  <button class="btn-small" onclick="pasteClipboard('jsonParseInput')">Paste</button>
-                </div>
-              </div>
-              <textarea id="jsonParseInput" placeholder='Enter JSON to parse/format&#10;&#10;Example:&#10;{"name":"John","age":30,"city":"New York"}'></textarea>
-              <div class="status-bar" id="jsonParseStatus">
-                <span class="status-icon">⬤</span> Ready
-              </div>
-            </div>
-
-            <div class="panel options-panel">
-              <h3>Format Options</h3>
-
-              <div class="option-group">
+          <!-- Format Options Bar at Top -->
+          <div class="panel options-bar">
+            <div class="options-bar-content">
+              <div class="option-inline">
                 <label class="option-label">Indentation</label>
                 <select id="jsonIndent">
                   <option value="2">2 spaces</option>
@@ -304,12 +289,10 @@
                 </select>
               </div>
 
-              <div class="checkbox-group">
-                <label class="checkbox-item">
-                  <input type="checkbox" id="jsonSortKeys" />
-                  <span>Sort keys alphabetically</span>
-                </label>
-              </div>
+              <label class="checkbox-item">
+                <input type="checkbox" id="jsonSortKeys" />
+                <span>Sort keys alphabetically</span>
+              </label>
 
               <div class="button-group">
                 <button class="btn-primary" onclick="formatJSON()">Format / Beautify</button>
@@ -319,15 +302,32 @@
             </div>
           </div>
 
-          <div class="panel output-panel">
-            <div class="panel-header">
-              <h3>Formatted Output</h3>
-              <div class="panel-actions">
-                <button class="btn-small" onclick="copyToClipboard('jsonParseOutput')">Copy</button>
-                <button class="btn-small" onclick="downloadOutput('jsonParseOutput', 'formatted.json')">Download</button>
+          <!-- Input and Output Side by Side -->
+          <div class="panel-grid two-col-equal">
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Input JSON</h3>
+                <div class="panel-actions">
+                  <button class="btn-small" onclick="clearInput('jsonParseInput')">Clear</button>
+                  <button class="btn-small" onclick="pasteClipboard('jsonParseInput')">Paste</button>
+                </div>
+              </div>
+              <textarea id="jsonParseInput" class="tall-textarea" placeholder='Enter JSON to parse/format&#10;&#10;Example:&#10;{"name":"John","age":30,"city":"New York"}'></textarea>
+              <div class="status-bar" id="jsonParseStatus">
+                <span class="status-icon">⬤</span> Ready
               </div>
             </div>
-            <pre id="jsonParseOutput" class="output-area json-output"></pre>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h3>Formatted Output</h3>
+                <div class="panel-actions">
+                  <button class="btn-small" onclick="copyToClipboard('jsonParseOutput')">Copy</button>
+                  <button class="btn-small" onclick="downloadOutput('jsonParseOutput', 'formatted.json')">Download</button>
+                </div>
+              </div>
+              <pre id="jsonParseOutput" class="output-area json-output tall-output"></pre>
+            </div>
           </div>
         </div>
 
