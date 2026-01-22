@@ -26,6 +26,9 @@
       <li onclick="showTool('json', this)">
         <span class="icon">{ }</span> JSON Tools
       </li>
+      <li onclick="showTool('worldclock', this)">
+        <span class="icon">🌍</span> World Clock
+      </li>
     </ul>
   </aside>
 
@@ -412,6 +415,181 @@
               <span class="summary-label">Unchanged:</span>
               <span class="summary-value" id="diffUnchanged">0</span>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== WORLD CLOCK TOOL ====== -->
+    <div id="worldclock" class="tool">
+      <div class="tool-header">
+        <h2>World Clock <span class="subtitle">Time Zone Converter</span></h2>
+        <p class="description">Convert time between UTC, IST (India), CST (US Central), Lima (Peru), and Bogota (Colombia) timezones.</p>
+      </div>
+
+      <div class="tool-body">
+        <!-- Live Clocks -->
+        <div class="panel live-clocks-panel">
+          <div class="panel-header">
+            <h3>🕐 Live Times</h3>
+            <div class="panel-actions">
+              <button class="btn-small" id="toggleLiveClocks" onclick="toggleLiveClocks()">Pause</button>
+            </div>
+          </div>
+          <div class="clocks-grid">
+            <div class="clock-card utc">
+              <div class="clock-label">UTC</div>
+              <div class="clock-time" id="liveUTC">--:--:--</div>
+              <div class="clock-date" id="liveDateUTC">---</div>
+            </div>
+            <div class="clock-card ist">
+              <div class="clock-label">IST (India)</div>
+              <div class="clock-time" id="liveIST">--:--:--</div>
+              <div class="clock-date" id="liveDateIST">---</div>
+              <div class="clock-offset">UTC +5:30</div>
+            </div>
+            <div class="clock-card cst">
+              <div class="clock-label">CST (US Central)</div>
+              <div class="clock-time" id="liveCST">--:--:--</div>
+              <div class="clock-date" id="liveDateCST">---</div>
+              <div class="clock-offset" id="cstOffset">UTC -6:00</div>
+            </div>
+            <div class="clock-card lima">
+              <div class="clock-label">Lima (Peru)</div>
+              <div class="clock-time" id="liveLima">--:--:--</div>
+              <div class="clock-date" id="liveDateLima">---</div>
+              <div class="clock-offset">UTC -5:00</div>
+            </div>
+            <div class="clock-card bogota">
+              <div class="clock-label">Bogota (Colombia)</div>
+              <div class="clock-time" id="liveBogota">--:--:--</div>
+              <div class="clock-date" id="liveDateBogota">---</div>
+              <div class="clock-offset">UTC -5:00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Time Converter -->
+        <div class="panel converter-panel">
+          <div class="panel-header">
+            <h3>🔄 Time Converter</h3>
+            <div class="panel-actions">
+              <button class="btn-small" onclick="setCurrentTime()">Use Current Time</button>
+              <button class="btn-small" onclick="clearConverter()">Clear</button>
+            </div>
+          </div>
+
+          <div class="converter-grid">
+            <div class="converter-input-section">
+              <div class="option-group">
+                <label class="option-label">Source Timezone</label>
+                <select id="sourceTimezone" onchange="convertTime()">
+                  <option value="UTC">UTC</option>
+                  <option value="IST">IST (India, UTC+5:30)</option>
+                  <option value="CST">CST (US Central)</option>
+                  <option value="Lima">Lima (Peru, UTC-5)</option>
+                  <option value="Bogota">Bogota (Colombia, UTC-5)</option>
+                </select>
+              </div>
+
+              <div class="time-input-row">
+                <div class="option-group">
+                  <label class="option-label">Date</label>
+                  <input type="date" id="inputDate" onchange="convertTime()" />
+                </div>
+                <div class="option-group">
+                  <label class="option-label">Time</label>
+                  <input type="time" id="inputTime" onchange="convertTime()" step="1" />
+                </div>
+              </div>
+
+              <button class="btn-primary btn-full" onclick="convertTime()">
+                Convert →
+              </button>
+            </div>
+
+            <div class="converted-times-section">
+              <h4>Converted Times</h4>
+              <div class="converted-results">
+                <div class="converted-row">
+                  <span class="tz-label utc-label">UTC</span>
+                  <span class="tz-time" id="convertedUTC">--:--:--</span>
+                  <span class="tz-date" id="convertedDateUTC">---</span>
+                </div>
+                <div class="converted-row">
+                  <span class="tz-label ist-label">IST</span>
+                  <span class="tz-time" id="convertedIST">--:--:--</span>
+                  <span class="tz-date" id="convertedDateIST">---</span>
+                </div>
+                <div class="converted-row">
+                  <span class="tz-label cst-label">CST</span>
+                  <span class="tz-time" id="convertedCST">--:--:--</span>
+                  <span class="tz-date" id="convertedDateCST">---</span>
+                </div>
+                <div class="converted-row">
+                  <span class="tz-label lima-label">Lima</span>
+                  <span class="tz-time" id="convertedLima">--:--:--</span>
+                  <span class="tz-date" id="convertedDateLima">---</span>
+                </div>
+                <div class="converted-row">
+                  <span class="tz-label bogota-label">Bogota</span>
+                  <span class="tz-time" id="convertedBogota">--:--:--</span>
+                  <span class="tz-date" id="convertedDateBogota">---</span>
+                </div>
+              </div>
+              <button class="btn-small btn-full" onclick="copyConvertedTimes()" style="margin-top: 12px;">Copy All Times</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="panel">
+          <div class="panel-header">
+            <h3>📋 Quick Reference</h3>
+          </div>
+          <div class="quick-ref-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Timezone</th>
+                  <th>Region</th>
+                  <th>UTC Offset</th>
+                  <th>DST</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>UTC</strong></td>
+                  <td>Coordinated Universal Time</td>
+                  <td>+0:00</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td><strong>IST</strong></td>
+                  <td>India Standard Time</td>
+                  <td>+5:30</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td><strong>CST</strong></td>
+                  <td>US Central (Chicago)</td>
+                  <td>-6:00 / -5:00</td>
+                  <td>Yes</td>
+                </tr>
+                <tr>
+                  <td><strong>PET</strong></td>
+                  <td>Lima, Peru</td>
+                  <td>-5:00</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td><strong>COT</strong></td>
+                  <td>Bogota, Colombia</td>
+                  <td>-5:00</td>
+                  <td>No</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
