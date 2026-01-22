@@ -448,11 +448,11 @@
               <div class="clock-date" id="liveDateIST">---</div>
               <div class="clock-offset">UTC +5:30</div>
             </div>
-            <div class="clock-card cst">
-              <div class="clock-label">CST (US Central)</div>
-              <div class="clock-time" id="liveCST">--:--:--</div>
-              <div class="clock-date" id="liveDateCST">---</div>
-              <div class="clock-offset" id="cstOffset">UTC -6:00</div>
+            <div class="clock-card clt">
+              <div class="clock-label">CLT (Chile)</div>
+              <div class="clock-time" id="liveCLT">--:--:--</div>
+              <div class="clock-date" id="liveDateCLT">---</div>
+              <div class="clock-offset" id="cltOffset">UTC -3:00</div>
             </div>
             <div class="clock-card lima">
               <div class="clock-label">Lima (Peru)</div>
@@ -479,6 +479,22 @@
             </div>
           </div>
 
+          <!-- Quick UTC Input -->
+          <div class="utc-quick-input">
+            <div class="option-group">
+              <label class="option-label">Paste UTC Datetime</label>
+              <div class="utc-input-row">
+                <input type="text" id="utcQuickInput" placeholder="2026-01-22 11:23:44.073" oninput="parseUTCInput()" />
+                <button class="btn-small" onclick="pasteAndConvertUTC()">Paste</button>
+              </div>
+              <div class="input-hint">Format: YYYY-MM-DD HH:MM:SS.mmm (always UTC)</div>
+            </div>
+          </div>
+
+          <div class="converter-divider">
+            <span>OR use manual input</span>
+          </div>
+
           <div class="converter-grid">
             <div class="converter-input-section">
               <div class="option-group">
@@ -486,7 +502,7 @@
                 <select id="sourceTimezone" onchange="convertTime()">
                   <option value="UTC">UTC</option>
                   <option value="IST">IST (India, UTC+5:30)</option>
-                  <option value="CST">CST (US Central)</option>
+                  <option value="CLT">CLT (Chile)</option>
                   <option value="Lima">Lima (Peru, UTC-5)</option>
                   <option value="Bogota">Bogota (Colombia, UTC-5)</option>
                 </select>
@@ -522,9 +538,9 @@
                   <span class="tz-date" id="convertedDateIST">---</span>
                 </div>
                 <div class="converted-row">
-                  <span class="tz-label cst-label">CST</span>
-                  <span class="tz-time" id="convertedCST">--:--:--</span>
-                  <span class="tz-date" id="convertedDateCST">---</span>
+                  <span class="tz-label clt-label">CLT</span>
+                  <span class="tz-time" id="convertedCLT">--:--:--</span>
+                  <span class="tz-date" id="convertedDateCLT">---</span>
                 </div>
                 <div class="converted-row">
                   <span class="tz-label lima-label">Lima</span>
@@ -571,9 +587,9 @@
                   <td>No</td>
                 </tr>
                 <tr>
-                  <td><strong>CST</strong></td>
-                  <td>US Central (Chicago)</td>
-                  <td>-6:00 / -5:00</td>
+                  <td><strong>CLT</strong></td>
+                  <td>Chile Time (Santiago)</td>
+                  <td>-4:00 / -3:00</td>
                   <td>Yes</td>
                 </tr>
                 <tr>
