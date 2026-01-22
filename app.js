@@ -1,9 +1,4 @@
-function showTool(toolId) {
-  document.querySelectorAll('.tool').forEach(t => t.classList.remove('active'));
-  document.getElementById(toolId).classList.add('active');
-}
-
-function convert() {
+window.convert = function () {
   const input = document.getElementById('inputText').value;
   const separator = document.getElementById('separator').value || ',';
   const quoteType = document.querySelector('input[name="quote"]:checked').value;
@@ -18,5 +13,6 @@ function convert() {
     .filter(v => v.length > 0)
     .map(v => `${quote}${v}${quote}`);
 
-  document.getElementById('outputText').value = values.join(separator + ' ');
-}
+  document.getElementById('outputText').value =
+    values.join(separator + ' ');
+};
