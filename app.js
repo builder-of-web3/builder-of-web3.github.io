@@ -1,3 +1,18 @@
+// Switch between tools
+window.showTool = function (toolId, el) {
+  document.querySelectorAll('.tool').forEach(tool =>
+    tool.classList.remove('active')
+  );
+
+  document.querySelectorAll('.sidebar li').forEach(li =>
+    li.classList.remove('active')
+  );
+
+  document.getElementById(toolId).classList.add('active');
+  if (el) el.classList.add('active');
+};
+
+// Convert logic (supports any separator + newline)
 window.convert = function () {
   const input = document.getElementById('inputText').value.trim();
   const separatorInput = document.getElementById('separator').value || ',';
@@ -7,7 +22,7 @@ window.convert = function () {
   if (quoteType === 'single') quote = "'";
   if (quoteType === 'double') quote = '"';
 
-  // Escape special regex characters in separator
+  // Escape regex special characters in separator
   const escapedSeparator = separatorInput.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   // Split by newline OR custom separator
