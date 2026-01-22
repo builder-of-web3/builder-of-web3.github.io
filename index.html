@@ -39,7 +39,7 @@
       </div>
 
       <div class="tool-body">
-        <div class="panel-grid two-col">
+        <div class="panel-grid three-col-comma">
           <!-- Input Panel -->
           <div class="panel">
             <div class="panel-header">
@@ -49,70 +49,81 @@
                 <button class="btn-small" onclick="pasteClipboard('commaInput')">Paste</button>
               </div>
             </div>
-            <textarea id="commaInput" placeholder="Enter values (one per line or separated by your chosen delimiter)&#10;&#10;Example:&#10;apple&#10;banana&#10;cherry"></textarea>
+            <textarea id="commaInput" class="tall-textarea" placeholder="Enter values (one per line or separated by your chosen delimiter)&#10;&#10;Example:&#10;apple&#10;banana&#10;cherry"></textarea>
             <div class="char-count">
               <span id="commaInputCount">0</span> characters | <span id="commaLineCount">0</span> lines
             </div>
           </div>
 
+          <!-- Output Panel -->
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Output</h3>
+              <div class="panel-actions">
+                <button class="btn-small" onclick="copyToClipboard('commaOutput')">Copy</button>
+                <button class="btn-small" onclick="downloadOutput('commaOutput', 'output.txt')">Download</button>
+              </div>
+            </div>
+            <pre id="commaOutput" class="output-area tall-output"></pre>
+            <div class="output-stats">
+              <span id="commaOutputCount">0</span> items
+            </div>
+          </div>
+
           <!-- Options Panel -->
-          <div class="panel options-panel">
+          <div class="panel options-panel compact">
             <h3>Options</h3>
 
             <div class="option-group">
               <label class="option-label">Input Separator</label>
-              <div class="input-row">
-                <select id="inputSepType" onchange="toggleCustomInput('inputSep')">
-                  <option value="newline">Newline</option>
-                  <option value="comma">Comma (,)</option>
-                  <option value="tab">Tab</option>
-                  <option value="space">Space</option>
-                  <option value="custom">Custom</option>
-                </select>
-                <input type="text" id="inputSepCustom" class="hidden" placeholder="Custom" maxlength="10" />
-              </div>
+              <select id="inputSepType" onchange="toggleCustomInput('inputSep')">
+                <option value="newline">Newline</option>
+                <option value="comma">Comma (,)</option>
+                <option value="tab">Tab</option>
+                <option value="space">Space</option>
+                <option value="custom">Custom</option>
+              </select>
+              <input type="text" id="inputSepCustom" class="hidden" placeholder="Custom" maxlength="10" />
             </div>
 
             <div class="option-group">
               <label class="option-label">Output Separator</label>
-              <div class="input-row">
-                <select id="outputSepType" onchange="toggleCustomOutput('outputSep')">
-                  <option value=",">Comma (,)</option>
-                  <option value=", ">Comma + Space (, )</option>
-                  <option value=",\n">Comma + Newline</option>
-                  <option value="\n">Newline</option>
-                  <option value="\t">Tab</option>
-                  <option value="custom">Custom</option>
-                </select>
-                <input type="text" id="outputSepCustom" class="hidden" placeholder="Custom" maxlength="10" />
-              </div>
+              <select id="outputSepType" onchange="toggleCustomOutput('outputSep')">
+                <option value=",">Comma (,)</option>
+                <option value=", ">Comma + Space (, )</option>
+                <option value=",\n">Comma + Newline</option>
+                <option value="\n">Newline</option>
+                <option value="\t">Tab</option>
+                <option value="custom">Custom</option>
+              </select>
+              <input type="text" id="outputSepCustom" class="hidden" placeholder="Custom" maxlength="10" />
             </div>
 
             <div class="option-group">
               <label class="option-label">Quote Style</label>
-              <div class="radio-group">
+              <div class="radio-group compact">
                 <label class="radio-item">
                   <input type="radio" name="quoteType" value="" checked />
                   <span>None</span>
                 </label>
                 <label class="radio-item">
                   <input type="radio" name="quoteType" value="'" />
-                  <span>Single ('value')</span>
+                  <span>Single (')</span>
                 </label>
                 <label class="radio-item">
                   <input type="radio" name="quoteType" value='"' />
-                  <span>Double ("value")</span>
+                  <span>Double (")</span>
                 </label>
                 <label class="radio-item">
                   <input type="radio" name="quoteType" value="`" />
-                  <span>Backtick (`value`)</span>
+                  <span>Backtick (`)</span>
                 </label>
               </div>
             </div>
 
             <div class="option-group">
-              <label class="option-label">Additional Options</label>
-              <div class="checkbox-group">
+              <label class="option-label">Options</label>
+              <div class="checkbox-group compact">
                 <label class="checkbox-item">
                   <input type="checkbox" id="removeDuplicates" checked />
                   <span>Remove duplicates</span>
@@ -123,15 +134,15 @@
                 </label>
                 <label class="checkbox-item">
                   <input type="checkbox" id="removeEmpty" checked />
-                  <span>Remove empty lines</span>
+                  <span>Remove empty</span>
                 </label>
                 <label class="checkbox-item">
                   <input type="checkbox" id="sortOutput" />
-                  <span>Sort alphabetically</span>
+                  <span>Sort A-Z</span>
                 </label>
                 <label class="checkbox-item">
                   <input type="checkbox" id="wrapBrackets" />
-                  <span>Wrap with [ ]</span>
+                  <span>Wrap [ ]</span>
                 </label>
               </div>
             </div>
@@ -139,21 +150,6 @@
             <button class="btn-primary btn-full" onclick="convertCommaQuote()">
               Convert →
             </button>
-          </div>
-        </div>
-
-        <!-- Output Panel -->
-        <div class="panel output-panel">
-          <div class="panel-header">
-            <h3>Output</h3>
-            <div class="panel-actions">
-              <button class="btn-small" onclick="copyToClipboard('commaOutput')">Copy</button>
-              <button class="btn-small" onclick="downloadOutput('commaOutput', 'output.txt')">Download</button>
-            </div>
-          </div>
-          <pre id="commaOutput" class="output-area"></pre>
-          <div class="output-stats">
-            <span id="commaOutputCount">0</span> items
           </div>
         </div>
       </div>
