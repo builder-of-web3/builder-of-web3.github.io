@@ -1079,3 +1079,313 @@ window.minifyJSON = minifyJSON;
 window.validateJSON = validateJSON;
 window.compareJSONDiff = compareJSONDiff;
 
+// ============================================
+// TRANSLATION TOOL
+// ============================================
+
+let currentSourceLang = 'en';
+
+// Dictionary for English to Spanish translation
+const enToEsDict = {
+  // Greetings
+  'hello': 'hola',
+  'hi': 'hola',
+  'goodbye': 'adiós',
+  'bye': 'adiós',
+  'good morning': 'buenos días',
+  'good afternoon': 'buenas tardes',
+  'good evening': 'buenas noches',
+  'good night': 'buenas noches',
+  'see you later': 'hasta luego',
+  'see you': 'nos vemos',
+  'welcome': 'bienvenido',
+
+  // Common words
+  'yes': 'sí',
+  'no': 'no',
+  'please': 'por favor',
+  'thank you': 'gracias',
+  'thanks': 'gracias',
+  "you're welcome": 'de nada',
+  'sorry': 'lo siento',
+  'excuse me': 'disculpe',
+  'ok': 'vale',
+  'okay': 'vale',
+
+  // Questions
+  'how are you': 'cómo estás',
+  'what is your name': 'cómo te llamas',
+  'where is': 'dónde está',
+  'how much': 'cuánto cuesta',
+  'what time': 'qué hora',
+  'why': 'por qué',
+  'when': 'cuándo',
+  'who': 'quién',
+  'what': 'qué',
+  'how': 'cómo',
+  'where': 'dónde',
+
+  // Common phrases
+  'i love you': 'te quiero',
+  'i am': 'soy',
+  'my name is': 'me llamo',
+  'i want': 'quiero',
+  'i need': 'necesito',
+  'i have': 'tengo',
+  'i like': 'me gusta',
+  "i don't understand": 'no entiendo',
+  'i understand': 'entiendo',
+  'i need help': 'necesito ayuda',
+  'can you help me': 'puedes ayudarme',
+
+  // Days
+  'monday': 'lunes',
+  'tuesday': 'martes',
+  'wednesday': 'miércoles',
+  'thursday': 'jueves',
+  'friday': 'viernes',
+  'saturday': 'sábado',
+  'sunday': 'domingo',
+  'today': 'hoy',
+  'tomorrow': 'mañana',
+  'yesterday': 'ayer',
+
+  // Numbers
+  'one': 'uno',
+  'two': 'dos',
+  'three': 'tres',
+  'four': 'cuatro',
+  'five': 'cinco',
+  'six': 'seis',
+  'seven': 'siete',
+  'eight': 'ocho',
+  'nine': 'nueve',
+  'ten': 'diez',
+  'zero': 'cero',
+
+  // Common nouns
+  'water': 'agua',
+  'food': 'comida',
+  'house': 'casa',
+  'home': 'casa',
+  'car': 'coche',
+  'book': 'libro',
+  'phone': 'teléfono',
+  'computer': 'computadora',
+  'time': 'tiempo',
+  'day': 'día',
+  'night': 'noche',
+  'friend': 'amigo',
+  'family': 'familia',
+  'work': 'trabajo',
+  'money': 'dinero',
+  'love': 'amor',
+  'man': 'hombre',
+  'woman': 'mujer',
+  'child': 'niño',
+  'boy': 'niño',
+  'girl': 'niña',
+  'dog': 'perro',
+  'cat': 'gato',
+  'city': 'ciudad',
+  'country': 'país',
+  'world': 'mundo',
+
+  // Verbs
+  'to be': 'ser/estar',
+  'to have': 'tener',
+  'to go': 'ir',
+  'to come': 'venir',
+  'to eat': 'comer',
+  'to drink': 'beber',
+  'to sleep': 'dormir',
+  'to speak': 'hablar',
+  'to read': 'leer',
+  'to write': 'escribir',
+  'to work': 'trabajar',
+  'to live': 'vivir',
+  'to know': 'saber',
+  'to think': 'pensar',
+  'to see': 'ver',
+  'to hear': 'oír',
+
+  // Adjectives
+  'good': 'bueno',
+  'bad': 'malo',
+  'big': 'grande',
+  'small': 'pequeño',
+  'new': 'nuevo',
+  'old': 'viejo',
+  'beautiful': 'hermoso',
+  'ugly': 'feo',
+  'hot': 'caliente',
+  'cold': 'frío',
+  'happy': 'feliz',
+  'sad': 'triste',
+  'easy': 'fácil',
+  'difficult': 'difícil',
+  'fast': 'rápido',
+  'slow': 'lento',
+
+  // Pronouns
+  'i': 'yo',
+  'you': 'tú',
+  'he': 'él',
+  'she': 'ella',
+  'we': 'nosotros',
+  'they': 'ellos',
+  'it': 'eso',
+  'this': 'esto',
+  'that': 'eso',
+
+  // Prepositions & connectors
+  'and': 'y',
+  'or': 'o',
+  'but': 'pero',
+  'with': 'con',
+  'without': 'sin',
+  'for': 'para',
+  'from': 'de',
+  'to': 'a',
+  'in': 'en',
+  'on': 'en',
+  'at': 'en',
+  'the': 'el/la',
+  'a': 'un/una',
+  'an': 'un/una',
+
+  // Colors
+  'red': 'rojo',
+  'blue': 'azul',
+  'green': 'verde',
+  'yellow': 'amarillo',
+  'black': 'negro',
+  'white': 'blanco',
+  'orange': 'naranja',
+  'purple': 'morado',
+  'pink': 'rosa',
+  'brown': 'marrón'
+};
+
+// Create reverse dictionary (Spanish to English)
+const esToEnDict = {};
+Object.entries(enToEsDict).forEach(([en, es]) => {
+  // Handle cases like "ser/estar" -> take first option
+  const esWord = es.includes('/') ? es.split('/')[0] : es;
+  esToEnDict[esWord.toLowerCase()] = en;
+});
+
+// Set source language
+function setSourceLanguage(lang) {
+  currentSourceLang = lang;
+
+  const sourceBtn = document.getElementById('langSourceBtn');
+  const targetBtn = document.getElementById('langTargetBtn');
+
+  if (lang === 'en') {
+    sourceBtn.classList.add('active');
+    targetBtn.classList.remove('active');
+    document.getElementById('sourceLangLabel').textContent = 'English';
+    document.getElementById('targetLangLabel').textContent = 'Spanish';
+  } else {
+    sourceBtn.classList.remove('active');
+    targetBtn.classList.add('active');
+    document.getElementById('sourceLangLabel').textContent = 'Spanish';
+    document.getElementById('targetLangLabel').textContent = 'English';
+  }
+
+  translateText();
+}
+
+// Swap languages
+function swapLanguages() {
+  const input = document.getElementById('translateInput');
+  const output = document.getElementById('translateOutput');
+
+  // Get current output text
+  const outputText = output.textContent;
+
+  // Only swap if there's actual translated content
+  if (outputText && outputText !== 'Translation will appear here...') {
+    input.value = outputText;
+  }
+
+  // Toggle language
+  const newLang = currentSourceLang === 'en' ? 'es' : 'en';
+  setSourceLanguage(newLang);
+}
+
+// Translate text
+function translateText() {
+  const input = document.getElementById('translateInput').value;
+  const output = document.getElementById('translateOutput');
+  const sourceCount = document.getElementById('sourceCharCount');
+  const targetCount = document.getElementById('targetCharCount');
+
+  // Update source character count
+  sourceCount.textContent = input.length;
+
+  if (!input.trim()) {
+    output.textContent = 'Translation will appear here...';
+    targetCount.textContent = '0';
+    return;
+  }
+
+  const dict = currentSourceLang === 'en' ? enToEsDict : esToEnDict;
+  let result = input;
+
+  // Sort phrases by length (longest first) to match multi-word phrases first
+  const phrases = Object.keys(dict).sort((a, b) => b.length - a.length);
+
+  phrases.forEach(phrase => {
+    const regex = new RegExp('\\b' + escapeRegexForTranslate(phrase) + '\\b', 'gi');
+    result = result.replace(regex, match => {
+      const translation = dict[phrase.toLowerCase()];
+      // Preserve original case
+      if (match[0] === match[0].toUpperCase()) {
+        return translation.charAt(0).toUpperCase() + translation.slice(1);
+      }
+      return translation;
+    });
+  });
+
+  output.textContent = result;
+  targetCount.textContent = result.length;
+}
+
+// Escape special regex characters for translation
+function escapeRegexForTranslate(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Insert phrase into input
+function insertPhrase(english, spanish) {
+  const input = document.getElementById('translateInput');
+  const phrase = currentSourceLang === 'en' ? english : spanish;
+
+  // Add to existing text or replace
+  if (input.value.trim()) {
+    input.value += ' ' + phrase;
+  } else {
+    input.value = phrase;
+  }
+
+  translateText();
+}
+
+// Toggle phrases panel visibility
+function togglePhrasesPanel() {
+  const panel = document.getElementById('phrasesPanel');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'grid';
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+// Export translation functions for global access
+window.setSourceLanguage = setSourceLanguage;
+window.swapLanguages = swapLanguages;
+window.translateText = translateText;
+window.insertPhrase = insertPhrase;
+window.togglePhrasesPanel = togglePhrasesPanel;
