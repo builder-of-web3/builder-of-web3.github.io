@@ -3,94 +3,276 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dev Utilities</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
+  < style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f5f7fa;
+    }
+    header {
+      background: #1f2937;
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 20px;
+    }
+    .container {
+      display: flex;
+      height: calc(100vh - 50px);
+    }
+    aside {
+      width: 220px;
+      background: #2c3e50;
+      color: white;
+      padding: 10px;
+    }
+    aside button {
+      width: 100%;
+      margin-bottom: 8px;
+      padding: 10px;
+      background: #34495e;
+      color: white;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+    }
+    aside button:hover {
+      background: #3d566e;
+    }
+    main {
+      flex: 1;
+      padding: 20px;
+      overflow: auto;
+    }
+    .tool {
+      display: none;
+    }
+    .tool.active {
+      display: block;
+    }
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-family: monospace;
+    }
+    .row {
+      display: flex;
+      gap: 20px;
+    }
+    .col {
+      flex: 1;
+    }
+    button.primary {
+      background: #27ae60;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+    button.primary:hover {
+      background: #219150;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #dcdcdc;
+      padding: 10px;
+      white-space: pre-wrap;
+      min-height: 120px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+    }
+  </style>
 </head>
-
 <body>
 
-<header>
-  Dev Utilities
-</header>
+<header>Dev Utilities</header>
 
 <div class="container">
-
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <h3>Tools</h3>
-    <ul>
-      <li class="active" onclick="showTool('commaQuote', this)">Comma Quote</li>
-      <li onclick="showTool('diffTool', this)">Text Diff (Coming Soon)</li>
-      <li onclick="showTool('jsonTool', this)">JSON Formatter (Coming Soon)</li>
-    </ul>
+  <aside>
+    <button onclick="showTool('comma')">Comma Quote</button>
+    <button onclick="showTool('listdiff')">List Diff</button>
+    <button onclick="showTool('json')">JSON Parser / Diff</button>
   </aside>
 
-  <!-- Main Content -->
-  <main class="content">
+  <main>
 
-    <!-- Comma Quote Tool -->
-    <section id="commaQuote" class="tool active">
-      <h2>Comma Quote</h2>
+    <!-- COMMA QUOTE -->
+    <div id="comma" class="tool active">
+      <h2>Comma Quote – Online Separator</h2>
 
-      <div class="panel-row">
-        <!-- Input -->
-        <div class="panel">
-          <h3>Input</h3>
-          <textarea
-            id="inputText"
-            placeholder="Enter values separated by commas, new lines, or custom separator"
-          ></textarea>
+      <textarea id="commaInput" placeholder="Enter values (one per line)"></textarea>
+
+      <label>Separator Character
+        <input id="separator" value="," />
+      </label>
+
+      <label><input type="radio" name="quote" value="" checked /> No Quote</label>
+      <label><input type="radio" name="quote" value="'" /> Single Quote</label>
+      <label><input type="radio" name="quote" value='"' /> Double Quote</label>
+
+      <label><input type="checkbox" id="removeDup" checked /> Remove duplicates</label>
+      <label><input type="checkbox" id="wrapArray" /> Wrap with [ ]</label>
+
+      <button class="primary" onclick="convertComma()">Convert</button>
+
+      <h3>Output</h3>
+      <pre id="commaOutput"></pre>
+    </div>
+
+    <!-- LIST DIFF -->
+    <div id="listdiff" class="tool">
+      <h2>List Diff</h2>
+
+      <div class="row">
+        <div class="col">
+          <h3>List A</h3>
+          <textarea id="listA"></textarea>
         </div>
-
-        <!-- Options -->
-        <div class="panel options">
-          <h3>Options</h3>
-
-          <label>
-            Separator Character
-            <input type="text" id="separator" value="," maxlength="5" />
-          </label>
-
-          <div class="radio-group">
-            <label>
-              <input type="radio" name="quote" value="none" />
-              No Quote
-            </label>
-            <label>
-              <input type="radio" name="quote" value="single" />
-              Single Quote
-            </label>
-            <label>
-              <input type="radio" name="quote" value="double" checked />
-              Double Quote
-            </label>
-          </div>
-
-          <button onclick="convert()">Convert</button>
+        <div class="col">
+          <h3>List B</h3>
+          <textarea id="listB"></textarea>
         </div>
       </div>
 
-      <!-- Output -->
-      <div class="panel full">
-        <h3>Output</h3>
-        <textarea id="outputText" readonly></textarea>
+      <label><input type="checkbox" id="caseSensitive" /> Case Sensitive</label>
+      <label><input type="checkbox" id="trimSpaces" checked /> Trim Spaces</label>
+
+      <button class="primary" onclick="compareLists()">Compare Lists</button>
+
+      <div class="row">
+        <div class="col">
+          <h3>A Only</h3>
+          <pre id="aOnly"></pre>
+        </div>
+        <div class="col">
+          <h3>A ∩ B</h3>
+          <pre id="common"></pre>
+        </div>
+        <div class="col">
+          <h3>B Only</h3>
+          <pre id="bOnly"></pre>
+        </div>
       </div>
-    </section>
+    </div>
 
-    <!-- Placeholder Tools -->
-    <section id="diffTool" class="tool">
-      <h2>Text Diff</h2>
-      <p>Coming soon…</p>
-    </section>
+    <!-- JSON -->
+    <div id="json" class="tool">
+      <h2>JSON Parser / Diff</h2>
 
-    <section id="jsonTool" class="tool">
-      <h2>JSON Formatter</h2>
-      <p>Coming soon…</p>
-    </section>
+      <div class="row">
+        <div class="col">
+          <h3>JSON A</h3>
+          <textarea id="jsonA"></textarea>
+        </div>
+        <div class="col">
+          <h3>JSON B</h3>
+          <textarea id="jsonB"></textarea>
+        </div>
+      </div>
+
+      <button class="primary" onclick="compareJSON()">Compare JSON</button>
+
+      <h3>Result</h3>
+      <pre id="jsonResult"></pre>
+    </div>
 
   </main>
 </div>
 
-<script src="app.js"></script>
+<script>
+  function showTool(id) {
+    document.querySelectorAll('.tool').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // COMMA QUOTE
+  function convertComma() {
+    let values = document.getElementById('commaInput').value
+      .split(/\r?\n/)
+      .map(v => v.trim())
+      .filter(Boolean);
+
+    if (document.getElementById('removeDup').checked) {
+      values = [...new Set(values)];
+    }
+
+    const quote = document.querySelector('input[name="quote"]:checked').value;
+    const sep = document.getElementById('separator').value;
+
+    let result = values.map(v => quote + v + quote).join(sep);
+
+    if (document.getElementById('wrapArray').checked) {
+      result = `[${result}]`;
+    }
+
+    document.getElementById('commaOutput').textContent = result;
+  }
+
+  // LIST DIFF
+  function compareLists() {
+    let a = document.getElementById('listA').value.split(/\r?\n/);
+    let b = document.getElementById('listB').value.split(/\r?\n/);
+
+    const trim = document.getElementById('trimSpaces').checked;
+    const cs = document.getElementById('caseSensitive').checked;
+
+    const normalize = v => {
+      if (trim) v = v.trim();
+      return cs ? v : v.toLowerCase();
+    };
+
+    const mapA = a.map(normalize).filter(Boolean);
+    const mapB = b.map(normalize).filter(Boolean);
+
+    const setA = new Set(mapA);
+    const setB = new Set(mapB);
+
+    const aOnly = [...setA].filter(x => !setB.has(x));
+    const bOnly = [...setB].filter(x => !setA.has(x));
+    const common = [...setA].filter(x => setB.has(x));
+
+    document.getElementById('aOnly').textContent = aOnly.join('\n');
+    document.getElementById('bOnly').textContent = bOnly.join('\n');
+    document.getElementById('common').textContent = common.join('\n');
+  }
+
+  // JSON DIFF
+  function compareJSON() {
+    try {
+      const a = JSON.parse(document.getElementById('jsonA').value);
+      const b = JSON.parse(document.getElementById('jsonB').value);
+      const diff = diffJSON(a, b);
+      document.getElementById('jsonResult').textContent =
+        JSON.stringify(diff, null, 2);
+    } catch (e) {
+      document.getElementById('jsonResult').textContent =
+        'Invalid JSON: ' + e.message;
+    }
+  }
+
+  function diffJSON(a, b) {
+    if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) {
+      return a === b ? undefined : { from: a, to: b };
+    }
+
+    const result = {};
+    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+
+    keys.forEach(k => {
+      if (!(k in a)) result[k] = { added: b[k] };
+      else if (!(k in b)) result[k] = { removed: a[k] };
+      else {
+        const d = diffJSON(a[k], b[k]);
+        if (d !== undefined) result[k] = d;
+      }
+    });
+
+    return Object.keys(result).length ? result : undefined;
+  }
+</script>
+
 </body>
 </html>
