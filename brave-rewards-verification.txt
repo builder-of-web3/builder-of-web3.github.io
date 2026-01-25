@@ -1,4 +1,4 @@
 This is a Brave Creators publisher verification file.
 
 Domain: builder-of-web3.github.io
-Token: e6bb2f0b40faa1b02eb7ae66a3714701fb38bfa57d3005b0ed73cf38c13fefc9
+Token: 210254c4b894e5d5052fff1ba92a1baea19499b221daa1176e5a77355003c6e9
